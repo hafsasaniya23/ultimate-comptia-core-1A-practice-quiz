@@ -1,0 +1,4984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompTIA A+ Core Practice Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .setup-screen, .quiz-screen, .results-screen {
+            display: none;
+        }
+
+        .setup-screen.active, .quiz-screen.active, .results-screen.active {
+            display: block;
+        }
+
+        .topic-selection {
+            margin-bottom: 30px;
+        }
+
+        .topic-selection h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .topic-item:hover {
+            border-color: #1a2a6c;
+            background: #e9ecef;
+        }
+
+        .topic-item input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .topic-item label {
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .topic-count {
+            margin-left: auto;
+            background: #1a2a6c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .option-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .option-group h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .option-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #e74c3c;
+        }
+
+        .question-counter {
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            border-color: #1a2a6c;
+            background: #e9ecef;
+        }
+
+        .option.selected {
+            border-color: #1a2a6c;
+            background: #e3f2fd;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #1a2a6c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .results-container {
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .results-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #1a2a6c;
+        }
+
+        .result-card h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .result-card p {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a2a6c, #2c3e50);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .topic-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1a2a6c;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .warning-message {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .warning-message.show {
+            display: block;
+        }
+
+        .topic-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .topic-summary h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .selected-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .selected-topic {
+            background: #1a2a6c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .quiz-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-laptop-code"></i> CompTIA A+ Core Practice Quiz</h1>
+            <p>Master the Core A+ Exam with 400+ Realistic Practice Questions</p>
+        </div>
+        
+        <div class="content">
+            <!-- Setup Screen -->
+            <div class="setup-screen active">
+                <div class="topic-selection">
+                    <h2>Select Topics to Practice (Minimum 5 Required)</h2>
+                    <div class="warning-message" id="topicWarning">
+                        <i class="fas fa-exclamation-triangle"></i> Please select at least 5 topics to start the quiz.
+                    </div>
+                    <div class="topics-grid">
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic1" value="IT Specialist Role & Troubleshooting">
+                            <label for="topic1">IT Specialist Role & Troubleshooting</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic2" value="Cables, Connectors & Display Types">
+                            <label for="topic2">Cables, Connectors & Display Types</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic3" value="Motherboards & Legacy Cables">
+                            <label for="topic3">Motherboards & Legacy Cables</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic4" value="Power Supply & Cooling Systems">
+                            <label for="topic4">Power Supply & Cooling Systems</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic5" value="Storage Devices & Memory">
+                            <label for="topic5">Storage Devices & Memory</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic6" value="CPUs & Hardware Troubleshooting">
+                            <label for="topic6">CPUs & Hardware Troubleshooting</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic7" value="Deep Hardware Troubleshooting">
+                            <label for="topic7">Deep Hardware Troubleshooting</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic8" value="Networking Overview & Hardware">
+                            <label for="topic8">Networking Overview & Hardware</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic9" value="Network Cables & Wireless">
+                            <label for="topic9">Network Cables & Wireless</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic10" value="Internet Connections & Protocols">
+                            <label for="topic10">Internet Connections & Protocols</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic11" value="IP Addressing & Configuration">
+                            <label for="topic11">IP Addressing & Configuration</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic12" value="Network Troubleshooting & Host Services">
+                            <label for="topic12">Network Troubleshooting & Host Services</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic13" value="Embedded & Internet Appliances">
+                            <label for="topic13">Embedded & Internet Appliances</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic14" value="Virtualization">
+                            <label for="topic14">Virtualization</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic15" value="Cloud Concepts">
+                            <label for="topic15">Cloud Concepts</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic16" value="Supporting Mobile Devices">
+                            <label for="topic16">Supporting Mobile Devices</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic17" value="Mobile Apps & Data">
+                            <label for="topic17">Mobile Apps & Data</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic18" value="Troubleshooting Mobile Devices">
+                            <label for="topic18">Troubleshooting Mobile Devices</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic19" value="Printers: Types & Setup">
+                            <label for="topic19">Printers: Types & Setup</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                        <div class="topic-item">
+                            <input type="checkbox" id="topic20" value="Printer Maintenance & Troubleshooting">
+                            <label for="topic20">Printer Maintenance & Troubleshooting</label>
+                            <span class="topic-count">20</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="topic-summary" id="topicSummary" style="display: none;">
+                    <h3>Quiz Summary</h3>
+                    <div class="selected-topics" id="selectedTopicsDisplay"></div>
+                    <p style="margin-top: 15px; font-size: 1.1rem; color: #2c3e50;">
+                        Total Questions: <strong id="totalQuestionsDisplay">0</strong>
+                    </p>
+                </div>
+                
+                <div class="quiz-options">
+                    <div class="option-group">
+                        <h3>Time Limit</h3>
+                        <select id="timeLimit">
+                            <option value="600">10 Minutes</option>
+                            <option value="900">15 Minutes</option>
+                            <option value="1800" selected>30 Minutes</option>
+                            <option value="3600">60 Minutes</option>
+                            <option value="5400">90 Minutes</option>
+                            <option value="7200">120 Minutes</option>
+                            <option value="0">No Limit</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn" id="startQuizBtn">
+                        <i class="fas fa-play"></i> Start Quiz
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quiz Screen -->
+            <div class="quiz-screen">
+                <div class="quiz-header">
+                    <div class="question-counter">
+                        Question <span id="currentQuestion">1</span> of <span id="totalQuestions">50</span>
+                    </div>
+                    <div class="timer">
+                        <i class="fas fa-clock"></i>
+                        <span id="timeDisplay">30:00</span>
+                    </div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="topic-badge" id="questionTopic">Topic Name</div>
+                    <div class="question" id="questionText">Question text will appear here</div>
+                    
+                    <div class="options-container" id="optionsContainer">
+                        <!-- Options will be dynamically generated -->
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn" id="prevBtn">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="btn" id="nextBtn">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn" id="submitBtn" style="display: none;">
+                        <i class="fas fa-check"></i> Submit Quiz
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Results Screen -->
+            <div class="results-screen">
+                <div class="results-container">
+                    <h2>Quiz Completed!</h2>
+                    <div class="score-display" id="scoreDisplay">85%</div>
+                    <p>Your performance on the CompTIA A+ Core Practice Quiz</p>
+                    
+                    <div class="results-details">
+                        <div class="result-card">
+                            <h3>Correct Answers</h3>
+                            <p id="correctAnswers">42</p>
+                        </div>
+                        <div class="result-card">
+                            <h3>Incorrect Answers</h3>
+                            <p id="incorrectAnswers">8</p>
+                        </div>
+                        <div class="result-card">
+                            <h3>Time Taken</h3>
+                            <p id="timeTaken">25:42</p>
+                        </div>
+                        <div class="result-card">
+                            <h3>Accuracy</h3>
+                            <p id="accuracy">84%</p>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn" id="reviewBtn">
+                            <i class="fas fa-eye"></i> Review Answers
+                        </button>
+                        <button class="btn" id="retakeBtn">
+                            <i class="fas fa-redo"></i> Retake Quiz
+                        </button>
+                        <button class="btn" id="newQuizBtn">
+                            <i class="fas fa-plus"></i> New Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Comprehensive CompTIA A+ Core question database with 20 questions per topic
+        const questionDatabase = {
+            "IT Specialist Role & Troubleshooting": [
+                {
+                    question: "Which of the following is the BEST example of a soft skill that an IT technician should possess?",
+                    options: [
+                        "Ability to configure a router",
+                        "Knowledge of TCP/IP protocols",
+                        "Effective communication with end users",
+                        "Experience with Windows Server"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "When following the troubleshooting methodology, what is the first step?",
+                    options: [
+                        "Establish a theory of probable cause",
+                        "Identify the problem",
+                        "Test the theory to determine cause",
+                        "Document findings, actions, and outcomes"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A user reports that their computer is running slowly. Which of the following should be checked FIRST?",
+                    options: [
+                        "Hard drive health",
+                        "RAM usage",
+                        "CPU temperature",
+                        "Network connectivity"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is the MOST important aspect of providing good customer service?",
+                    options: [
+                        "Technical expertise",
+                        "Active listening",
+                        "Quick problem resolution",
+                        "Documentation skills"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to explain a complex technical issue to a non-technical user. Which approach is BEST?",
+                    options: [
+                        "Use technical jargon to demonstrate expertise",
+                        "Provide a written technical report",
+                        "Use analogies and simple language",
+                        "Refer the user to online documentation"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is the BEST way to document troubleshooting steps?",
+                    options: [
+                        "Keep mental notes",
+                        "Write on scratch paper",
+                        "Use a ticketing system",
+                        "Tell your supervisor"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user is frustrated because their issue has not been resolved after multiple attempts. Which of the following should the technician do FIRST?",
+                    options: [
+                        "Escalate the issue to a supervisor",
+                        "Apologize and assure the user you will resolve it",
+                        "Ask the user to be more patient",
+                        "Transfer the user to another technician"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of professional behavior for an IT technician?",
+                    options: [
+                        "Working on personal tasks during company time",
+                        "Maintaining confidentiality of user information",
+                        "Sharing passwords with trusted colleagues",
+                        "Installing unauthorized software"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician is working on a critical server during business hours. Which of the following should be done FIRST?",
+                    options: [
+                        "Notify affected users of potential downtime",
+                        "Begin the repair immediately",
+                        "Wait until after business hours",
+                        "Ask for permission from the user"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is the MOST effective way to prevent recurring issues?",
+                    options: [
+                        "Documenting the solution",
+                        "Training users",
+                        "Implementing preventive measures",
+                        "Increasing monitoring"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user reports that their computer won't turn on. Which of the following should be checked FIRST?",
+                    options: [
+                        "Power supply",
+                        "Motherboard",
+                        "RAM",
+                        "Hard drive"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is the BEST way to handle an angry customer?",
+                    options: [
+                        "Argue with them",
+                        "Listen actively and empathize",
+                        "Transfer to supervisor",
+                        "Hang up"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to prioritize multiple support tickets. Which factor should be considered FIRST?",
+                    options: [
+                        "User's position in the company",
+                        "Impact on business operations",
+                        "Time the ticket was submitted",
+                        "Complexity of the issue"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a key principle of change management?",
+                    options: [
+                        "Making changes without testing",
+                        "Implementing changes during peak hours",
+                        "Documenting and communicating changes",
+                        "Skipping approval processes"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user reports that their application crashes every time they try to save a document. Which of the following should be done FIRST?",
+                    options: [
+                        "Reinstall the application",
+                        "Check for updates",
+                        "Ask about recent changes",
+                        "Check system resources"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is the MOST important when documenting a repair?",
+                    options: [
+                        "Technical details",
+                        "Customer information",
+                        "Steps taken",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician is asked to perform a task that is outside their scope of knowledge. Which of the following should they do?",
+                    options: [
+                        "Attempt the task anyway",
+                        "Ask for help or training",
+                        "Decline the task",
+                        "Delegate to someone else"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of good troubleshooting documentation?",
+                    options: [
+                        "Vague descriptions",
+                        "Incomplete information",
+                        "Clear and detailed steps",
+                        "Personal opinions"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user reports that their computer is making unusual noises. Which of the following should be checked FIRST?",
+                    options: [
+                        "Hard drive",
+                        "Cooling fans",
+                        "Power supply",
+                        "Optical drive"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is the BEST way to build rapport with users?",
+                    options: [
+                        "Using technical jargon",
+                        "Being friendly and approachable",
+                        "Rushing through repairs",
+                        "Avoiding eye contact"
+                    ],
+                    correct: 1
+                }
+            ],
+            
+            "Cables, Connectors & Display Types": [
+                {
+                    question: "Which video connector supports 4K resolution at 60Hz and includes audio in the same cable?",
+                    options: [
+                        "VGA",
+                        "DVI-D",
+                        "HDMI 2.0",
+                        "DisplayPort 1.2"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user wants to connect their laptop to an older projector that only has a VGA input. The laptop has HDMI and USB-C ports. Which of the following adapters is needed?",
+                    options: [
+                        "USB-C to Ethernet",
+                        "HDMI to VGA",
+                        "USB-C to DisplayPort",
+                        "DVI to VGA"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following connectors is commonly used for Thunderbolt 3?",
+                    options: [
+                        "USB-A",
+                        "USB-C",
+                        "Mini DisplayPort",
+                        "Micro USB"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to connect a computer to a monitor that only has a DVI-D input. The computer has HDMI and DisplayPort outputs. Which adapter should be used?",
+                    options: [
+                        "HDMI to DVI-D",
+                        "DisplayPort to DVI-D",
+                        "USB-C to DVI-D",
+                        "VGA to DVI-D"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following display technologies uses LED backlighting to improve image quality and energy efficiency?",
+                    options: [
+                        "CRT",
+                        "Plasma",
+                        "LCD",
+                        "OLED"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which display connector can carry both video and audio signals?",
+                    options: [
+                        "DVI",
+                        "VGA",
+                        "HDMI",
+                        "DisplayPort"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following display resolutions is 4K?",
+                    options: [
+                        "1280x720",
+                        "1920x1080",
+                        "2560x1440",
+                        "3840x2160"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A user wants to connect multiple monitors to their laptop. Which of the following features is required?",
+                    options: [
+                        "Multiple video ports",
+                        "Docking station",
+                        "USB hub",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of VGA connectors?",
+                    options: [
+                        "Digital signal",
+                        "High resolution",
+                        "Analog signal",
+                        "Audio support"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following connectors is used for SATA drives?",
+                    options: [
+                        "Molex",
+                        "Berg",
+                        "SATA power",
+                        "PCIe"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A technician needs to connect an external hard drive to a computer. Which of the following provides the FASTEST transfer speeds?",
+                    options: [
+                        "USB 2.0",
+                        "USB 3.0",
+                        "FireWire 400",
+                        "eSATA"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of fiber optic cables?",
+                    options: [
+                        "Susceptible to EMI",
+                        "Limited distance",
+                        "High bandwidth",
+                        "Inexpensive"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user wants to connect their smartphone to a car stereo. Which of the following connections would be MOST appropriate?",
+                    options: [
+                        "HDMI",
+                        "USB",
+                        "Bluetooth",
+                        "Ethernet"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a characteristic of USB-C?",
+                    options: [
+                        "Directional connector",
+                        "Low power delivery",
+                        "Reversible connector",
+                        "Limited to data transfer"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A technician needs to identify a cable that has RJ45 connectors. Which type of cable is it?",
+                    options: [
+                        "Coaxial",
+                        "Fiber optic",
+                        "Ethernet",
+                        "HDMI"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following display technologies offers the BEST color accuracy and contrast?",
+                    options: [
+                        "LCD",
+                        "LED",
+                        "OLED",
+                        "Plasma"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user reports that their monitor is displaying a 'no signal' message. Which of the following should be checked FIRST?",
+                    options: [
+                        "Monitor power",
+                        "Video cable connection",
+                        "Computer power",
+                        "Display settings"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of DVI-D connectors?",
+                    options: [
+                        "Analog only",
+                        "Digital only",
+                        "Both analog and digital",
+                        "Audio support"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to connect a computer to a TV for streaming. Which of the following provides the BEST quality?",
+                    options: [
+                        "Composite",
+                        "Component",
+                        "HDMI",
+                        "VGA"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a characteristic of Thunderbolt connections?",
+                    options: [
+                        "Low bandwidth",
+                        "Video only",
+                        "High bandwidth and daisy-chaining",
+                        "Proprietary to Apple"
+                    ],
+                    correct: 2
+                }
+            ],
+            
+            "Motherboards & Legacy Cables": [
+                {
+                    question: "Which of the following motherboard form factors is MOST commonly used in high-end workstations and servers?",
+                    options: [
+                        "ATX",
+                        "Micro-ATX",
+                        "Mini-ITX",
+                        "Extended ATX (EATX)"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician is building a PC and needs to connect a front panel audio connector. Which of the following headers on the motherboard should be used?",
+                    options: [
+                        "FP_AUDIO",
+                        "HD_AUDIO",
+                        "AC'97",
+                        "SPDIF"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which type of memory module is used in older systems and has 184 pins?",
+                    options: [
+                        "DDR",
+                        "DDR2",
+                        "DDR3",
+                        "SDRAM"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A technician needs to identify the BIOS version on a motherboard. Where is this information typically displayed?",
+                    options: [
+                        "On the motherboard itself",
+                        "In the BIOS setup utility",
+                        "In Windows Device Manager",
+                        "On the CPU"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following connectors is used for a floppy disk drive?",
+                    options: [
+                        "Molex",
+                        "SATA",
+                        "Berg",
+                        "PCIe"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which motherboard component stores the BIOS?",
+                    options: [
+                        "CMOS battery",
+                        "Southbridge",
+                        "ROM chip",
+                        "Northbridge"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a function of the CMOS battery?",
+                    options: [
+                        "Power the CPU",
+                        "Maintain BIOS settings",
+                        "Provide backup power",
+                        "Cool the motherboard"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of the chipset?",
+                    options: [
+                        "Control data flow",
+                        "Provide power",
+                        "Cool the CPU",
+                        "Store data"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A technician needs to install RAM in a laptop. Which of the following form factors is MOST likely required?",
+                    options: [
+                        "DIMM",
+                        "SO-DIMM",
+                        "SIMM",
+                        "RIMM"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of ATX motherboards?",
+                    options: [
+                        "Small form factor",
+                        "Integrated power supply",
+                        "Standardized layout",
+                        "Proprietary connectors"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following connectors is used for front panel USB headers?",
+                    options: [
+                        "USB header",
+                        "F_USB",
+                        "JUSB1",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to update the BIOS. Which of the following should be done FIRST?",
+                    options: [
+                        "Download the update",
+                        "Backup current BIOS",
+                        "Check compatibility",
+                        "Disconnect power"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of PCIe slots?",
+                    options: [
+                        "Parallel communication",
+                        "Hot-swappable",
+                        "Serial communication",
+                        "Limited to graphics cards"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A technician needs to identify a motherboard's CPU socket. Which of the following tools would be MOST helpful?",
+                    options: [
+                        "Multimeter",
+                        "CPU-Z",
+                        "POST card",
+                        "Loopback plug"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of the northbridge?",
+                    options: [
+                        "Control slow devices",
+                        "Manage memory and CPU",
+                        "Handle I/O operations",
+                        "Control power"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to connect a case fan to the motherboard. Which type of connector should be used?",
+                    options: [
+                        "Molex",
+                        "SATA",
+                        "3-pin fan header",
+                        "4-pin fan header"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of Micro-ATX motherboards?",
+                    options: [
+                        "Larger than ATX",
+                        "Fewer expansion slots",
+                        "More power connectors",
+                        "Proprietary form factor"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to clear the CMOS settings. Which of the following methods should be used?",
+                    options: [
+                        "Remove the CPU",
+                        "Reseat the RAM",
+                        "Remove the CMOS battery",
+                        "Update the BIOS"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a function of the southbridge?",
+                    options: [
+                        "Control memory",
+                        "Manage CPU",
+                        "Handle I/O and expansion",
+                        "Control power"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A technician needs to install a graphics card. Which type of expansion slot is required?",
+                    options: [
+                        "PCI",
+                        "AGP",
+                        "PCIe x16",
+                        "ISA"
+                    ],
+                    correct: 2
+                }
+            ],
+            
+            "Power Supply & Cooling Systems": [
+                {
+                    question: "Which power supply connector is specifically designed to provide extra power to high-end PCIe graphics cards?",
+                    options: [
+                        "Molex",
+                        "SATA",
+                        "8-pin PCIe",
+                        "24-pin ATX"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A PC is randomly shutting down under heavy load. Which of the following is the MOST likely cause?",
+                    options: [
+                        "Faulty RAM",
+                        "Overheating CPU",
+                        "Corrupt OS",
+                        "Failed hard drive"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following cooling methods uses a phase change process to dissipate heat?",
+                    options: [
+                        "Air cooling",
+                        "Liquid cooling",
+                        "Heat pipe",
+                        "Thermal paste"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to replace a power supply. Which of the following ratings is MOST important to consider?",
+                    options: [
+                        "Physical size",
+                        "Wattage",
+                        "Number of fans",
+                        "Brand"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a symptom of a failing power supply?",
+                    options: [
+                        "Blue screen of death",
+                        "Random reboots",
+                        "No display",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of insufficient power supply wattage?",
+                    options: [
+                        "System instability",
+                        "Overheating",
+                        "No power",
+                        "All of the above"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a failing power supply?",
+                    options: [
+                        "Burning smell",
+                        "No power",
+                        "Random shutdowns",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to install a power supply in a small form factor case. Which of the following should be considered?",
+                    options: [
+                        "Wattage",
+                        "Physical size",
+                        "Efficiency rating",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of 80 Plus certified power supplies?",
+                    options: [
+                        "Higher wattage",
+                        "Better efficiency",
+                        "More connectors",
+                        "Lower cost"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to connect multiple case fans. Which of the following connectors should be used?",
+                    options: [
+                        "Molex",
+                        "SATA",
+                        "3-pin or 4-pin fan headers",
+                        "PCIe"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a symptom of overheating?",
+                    options: [
+                        "Slow performance",
+                        "System crashes",
+                        "Loud fan noise",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to apply thermal paste to a CPU. Which of the following is the correct amount to use?",
+                    options: [
+                        "A large amount to cover the entire CPU",
+                        "A small pea-sized amount in the center",
+                        "No thermal paste is needed",
+                        "A thin layer covering the entire CPU"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of thermal paste?",
+                    options: [
+                        "Clean the CPU",
+                        "Improve heat transfer",
+                        "Power the CPU",
+                        "Cool the CPU"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to install liquid cooling. Which of the following should be considered?",
+                    options: [
+                        "Case size",
+                        "Component compatibility",
+                        "Maintenance requirements",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of heat pipes?",
+                    options: [
+                        "Require power",
+                        "Use phase change",
+                        "Are noisy",
+                        "Are expensive"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to replace a case fan. Which of the following specifications is MOST important?",
+                    options: [
+                        "Size",
+                        "Airflow",
+                        "Noise level",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a failing CPU fan?",
+                    options: [
+                        "Loud noise",
+                        "Overheating",
+                        "System shutdown",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to install a power supply with modular cables. Which of the following is a benefit?",
+                    options: [
+                        "Lower cost",
+                        "Better cable management",
+                        "Higher wattage",
+                        "Quieter operation"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of the power supply?",
+                    options: [
+                        "Convert AC to DC",
+                        "Cool the system",
+                        "Store data",
+                        "Connect peripherals"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A technician needs to identify the wattage of a power supply. Where is this information typically found?",
+                    options: [
+                        "On the power supply label",
+                        "In the BIOS",
+                        "On the motherboard",
+                        "In Windows"
+                    ],
+                    correct: 0
+                }
+            ],
+            
+            "Storage Devices & Memory": [
+                {
+                    question: "Which type of memory is non-volatile and used to store firmware such as the BIOS?",
+                    options: [
+                        "DRAM",
+                        "SRAM",
+                        "ROM",
+                        "Cache"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user wants to upgrade their laptop storage for faster performance. Which of the following would provide the BEST speed improvement?",
+                    options: [
+                        "Replacing HDD with SSHD",
+                        "Adding more RAM",
+                        "Replacing HDD with NVMe SSD",
+                        "Defragmenting the HDD"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following storage technologies uses flash memory and has no moving parts?",
+                    options: [
+                        "HDD",
+                        "SSD",
+                        "Optical drive",
+                        "Tape drive"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to install RAM in a laptop. Which of the following form factors is MOST likely required?",
+                    options: [
+                        "DIMM",
+                        "SO-DIMM",
+                        "SIMM",
+                        "RIMM"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of triple-channel memory architecture?",
+                    options: [
+                        "Requires three identical memory modules",
+                        "Only works with DDR4",
+                        "Provides better performance than dual-channel",
+                        "Both A and C"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of SSDs compared to HDDs?",
+                    options: [
+                        "Lower cost per GB",
+                        "Faster access times",
+                        "Higher capacity",
+                        "More durable"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of RAM?",
+                    options: [
+                        "Non-volatile",
+                        "Volatile",
+                        "Permanent storage",
+                        "Slow access"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of HDDs?",
+                    options: [
+                        "No moving parts",
+                        "Faster than SSDs",
+                        "Lower cost per GB",
+                        "More durable"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A technician needs to identify the type of RAM installed. Which of the following should be checked?",
+                    options: [
+                        "CPU socket",
+                        "RAM slots",
+                        "RAM module label",
+                        "BIOS settings"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a characteristic of DDR4 RAM?",
+                    options: [
+                        "1.5V voltage",
+                        "240-pin module",
+                        "Higher bandwidth than DDR3",
+                        "Compatible with DDR3 slots"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A technician needs to install a 2.5-inch drive in a 3.5-inch bay. Which of the following is required?",
+                    options: [
+                        "Adapter bracket",
+                        "Extension cable",
+                        "Power converter",
+                        "Data converter"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a function of the memory controller?",
+                    options: [
+                        "Manage data flow between CPU and RAM",
+                        "Store data permanently",
+                        "Cool the RAM",
+                        "Provide power to RAM"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A user reports that their computer is running slowly. Which of the following should be checked FIRST?",
+                    options: [
+                        "Hard drive space",
+                        "RAM usage",
+                        "CPU usage",
+                        "Network connectivity"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of NVMe SSDs?",
+                    options: [
+                        "Use SATA interface",
+                        "Slower than SATA SSDs",
+                        "Use PCIe interface",
+                        "Require special drivers"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A technician needs to install RAM in a system that requires ECC memory. Which of the following should be used?",
+                    options: [
+                        "Standard DDR4",
+                        "ECC DDR4",
+                        "DDR3",
+                        "DDR2"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of virtual memory?",
+                    options: [
+                        "Extend physical RAM",
+                        "Speed up the system",
+                        "Replace physical RAM",
+                        "Store permanent data"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A technician needs to identify the speed of RAM. Which of the following should be checked?",
+                    options: [
+                        "Module label",
+                        "BIOS settings",
+                        "CPU-Z",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of M.2 SSDs?",
+                    options: [
+                        "Large form factor",
+                        "Use SATA interface only",
+                        "Small form factor",
+                        "Require external power"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user wants to upgrade their RAM. Which of the following should be considered?",
+                    options: [
+                        "Compatibility",
+                        "Capacity",
+                        "Speed",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a function of the page file?",
+                    options: [
+                        "Store temporary files",
+                        "Extend physical RAM",
+                        "Store system files",
+                        "Cache frequently used data"
+                    ],
+                    correct: 1
+                }
+            ],
+            
+            "CPUs & Hardware Troubleshooting": [
+                {
+                    question: "Which of the following CPU features allows a single processor to appear as two processors to the operating system?",
+                    options: [
+                        "Overclocking",
+                        "Hyper-threading",
+                        "Turbo Boost",
+                        "Virtualization"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A PC fails to POST and emits one long beep followed by two short beeps. What is the MOST likely issue?",
+                    options: [
+                        "RAM failure",
+                        "Video card problem",
+                        "CPU failure",
+                        "Keyboard error"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of the CPU?",
+                    options: [
+                        "Store data permanently",
+                        "Execute instructions",
+                        "Provide power to components",
+                        "Connect to the network"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to apply thermal paste to a CPU. Which of the following is the correct amount to use?",
+                    options: [
+                        "A large amount to cover the entire CPU",
+                        "A small pea-sized amount in the center",
+                        "No thermal paste is needed",
+                        "A thin layer covering the entire CPU"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a symptom of a failing CPU?",
+                    options: [
+                        "System won't power on",
+                        "Random system crashes",
+                        "No display output",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a function of the CPU cache?",
+                    options: [
+                        "Store frequently used data",
+                        "Cool the CPU",
+                        "Provide power",
+                        "Connect to RAM"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A technician needs to identify the socket type of a CPU. Which of the following should be checked?",
+                    options: [
+                        "CPU documentation",
+                        "Motherboard manual",
+                        "CPU-Z",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of a multi-core CPU?",
+                    options: [
+                        "Higher clock speed",
+                        "Better multitasking",
+                        "Lower power consumption",
+                        "All of the above"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to replace a CPU. Which of the following should be done FIRST?",
+                    options: [
+                        "Remove the old CPU",
+                        "Clean the socket",
+                        "Ground yourself",
+                        "Apply thermal paste"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a symptom of CPU overheating?",
+                    options: [
+                        "Slow performance",
+                        "System crashes",
+                        "Loud fan noise",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a function of the CPU clock speed?",
+                    options: [
+                        "Determine how many instructions can be processed",
+                        "Control power consumption",
+                        "Manage cache memory",
+                        "Control cooling"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A technician needs to identify if a CPU is compatible with a motherboard. Which of the following should be checked?",
+                    options: [
+                        "Socket type",
+                        "Chipset",
+                        "BIOS version",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of Intel's Turbo Boost technology?",
+                    options: [
+                        "Permanently increases clock speed",
+                        "Temporarily increases clock speed",
+                        "Reduces power consumption",
+                        "Improves cooling"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to install a CPU cooler. Which of the following should be considered?",
+                    options: [
+                        "Compatibility",
+                        "Cooling capacity",
+                        "Size",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a function of the CPU front-side bus?",
+                    options: [
+                        "Connect CPU to RAM",
+                        "Connect CPU to northbridge",
+                        "Control power",
+                        "Manage cache"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A technician needs to identify if a CPU is overheating. Which of the following tools should be used?",
+                    options: [
+                        "Multimeter",
+                        "Thermal probe",
+                        "BIOS monitoring",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of a 64-bit CPU?",
+                    options: [
+                        "Can address more than 4GB of RAM",
+                        "Faster than 32-bit",
+                        "Lower power consumption",
+                        "Better cooling"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A technician needs to replace a CPU. Which of the following safety precautions should be taken?",
+                    options: [
+                        "Disconnect power",
+                        "Ground yourself",
+                        "Use proper tools",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a function of the CPU instruction set?",
+                    options: [
+                        "Define operations the CPU can perform",
+                        "Control clock speed",
+                        "Manage cache",
+                        "Control cooling"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A technician needs to identify the generation of an Intel CPU. Which of the following should be checked?",
+                    options: [
+                        "Model number",
+                        "Socket type",
+                        "Clock speed",
+                        "Cache size"
+                    ],
+                    correct: 0
+                }
+            ],
+            
+            "Deep Hardware Troubleshooting": [
+                {
+                    question: "Which of the following tools would be BEST for testing a power supply's output voltages?",
+                    options: [
+                        "Multimeter",
+                        "Loopback plug",
+                        "POST card",
+                        "Tone generator"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "A computer intermittently loses network connectivity. Which of the following should be checked FIRST?",
+                    options: [
+                        "Network cable",
+                        "Router settings",
+                        "NIC drivers",
+                        "IP configuration"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a failing hard drive?",
+                    options: [
+                        "Slow performance",
+                        "Clicking noises",
+                        "Frequent crashes",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to test RAM for errors. Which of the following tools should be used?",
+                    options: [
+                        "CHKDSK",
+                        "SFC",
+                        "MemTest86",
+                        "Prime95"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a common cause of the 'blue screen of death' (BSOD)?",
+                    options: [
+                        "Hardware failure",
+                        "Driver issues",
+                        "Overheating",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of bad RAM?",
+                    options: [
+                        "BSOD",
+                        "System crashes",
+                        "Data corruption",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a failing motherboard?",
+                    options: [
+                        "No power",
+                        "Random reboots",
+                        "Peripheral failure",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to test network cables. Which of the following tools should be used?",
+                    options: [
+                        "Multimeter",
+                        "Cable tester",
+                        "Tone generator",
+                        "Loopback plug"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a symptom of a failing graphics card?",
+                    options: [
+                        "Artifacts on screen",
+                        "No display",
+                        "System crashes",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to identify a short circuit. Which of the following tools should be used?",
+                    options: [
+                        "Multimeter",
+                        "POST card",
+                        "Loopback plug",
+                        "Tone generator"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a failing power supply?",
+                    options: [
+                        "Random shutdowns",
+                        "Burning smell",
+                        "No power",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to test a monitor. Which of the following tools should be used?",
+                    options: [
+                        "Multimeter",
+                        "POST card",
+                        "Known good monitor",
+                        "Loopback plug"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a symptom of a failing CPU?",
+                    options: [
+                        "Overheating",
+                        "System crashes",
+                        "No POST",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to test USB ports. Which of the following tools should be used?",
+                    options: [
+                        "Multimeter",
+                        "USB device",
+                        "POST card",
+                        "Loopback plug"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a symptom of a failing optical drive?",
+                    options: [
+                        "Won't read discs",
+                        "Loud noises",
+                        "Slow performance",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to identify a failing capacitor. Which of the following should be checked?",
+                    options: [
+                        "Bulging top",
+                        "Leaking electrolyte",
+                        "Burn marks",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a failing sound card?",
+                    options: [
+                        "No sound",
+                        "Distorted audio",
+                        "System crashes",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to test a power button. Which of the following tools should be used?",
+                    options: [
+                        "Multimeter",
+                        "POST card",
+                        "Screwdriver",
+                        "Tone generator"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a failing network card?",
+                    options: [
+                        "No network connection",
+                        "Slow speeds",
+                        "Intermittent connectivity",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to identify a grounding issue. Which of the following should be checked?",
+                    options: [
+                        "Power supply",
+                        "Case mounting",
+                        "Cable routing",
+                        "All of the above"
+                    ],
+                    correct: 3
+                }
+            ],
+            
+            "Networking Overview & Hardware": [
+                {
+                    question: "Which network device operates at Layer 2 of the OSI model and uses MAC addresses to forward traffic?",
+                    options: [
+                        "Router",
+                        "Switch",
+                        "Hub",
+                        "Modem"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A user needs to connect multiple devices in a home network to share files and access the internet. Which device is required?",
+                    options: [
+                        "Switch",
+                        "Hub",
+                        "Router",
+                        "Bridge"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a function of a router?",
+                    options: [
+                        "Connect devices within the same network",
+                        "Forward data between different networks",
+                        "Amplify network signals",
+                        "Convert digital signals to analog"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following devices is used to connect a computer to a network using a cable?",
+                    options: [
+                        "Modem",
+                        "NIC",
+                        "Switch",
+                        "Router"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of a hub?",
+                    options: [
+                        "Operates at Layer 3",
+                        "Filters traffic based on MAC addresses",
+                        "Broadcasts data to all ports",
+                        "Segments collision domains"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a function of a switch?",
+                    options: [
+                        "Connect different networks",
+                        "Filter traffic",
+                        "Forward based on MAC addresses",
+                        "Provide DHCP"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a function of a modem?",
+                    options: [
+                        "Connect to the internet",
+                        "Route traffic",
+                        "Switch packets",
+                        "Filter content"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of a bridge?",
+                    options: [
+                        "Connects different network types",
+                        "Operates at Layer 3",
+                        "Filters based on IP addresses",
+                        "Provides DHCP"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a function of a router?",
+                    options: [
+                        "Connect networks",
+                        "Filter traffic",
+                        "Provide DHCP",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of a Layer 3 switch?",
+                    options: [
+                        "Only operates at Layer 2",
+                        "Can perform routing functions",
+                        "Cannot connect to different networks",
+                        "Only works with MAC addresses"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a repeater?",
+                    options: [
+                        "Connect different networks",
+                        "Amplify signals",
+                        "Filter traffic",
+                        "Provide DHCP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of a managed switch?",
+                    options: [
+                        "No configuration options",
+                        "Basic functionality only",
+                        "Advanced configuration options",
+                        "Cannot be monitored"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a function of a wireless access point?",
+                    options: [
+                        "Connect wireless devices to wired network",
+                        "Route between networks",
+                        "Filter content",
+                        "Provide DHCP"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of a firewall?",
+                    options: [
+                        "Amplifies signals",
+                        "Filters network traffic",
+                        "Connects networks",
+                        "Provides DHCP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a load balancer?",
+                    options: [
+                        "Distribute traffic across multiple servers",
+                        "Filter content",
+                        "Connect networks",
+                        "Provide DHCP"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of a unmanaged switch?",
+                    options: [
+                        "Requires configuration",
+                        "Plug and play",
+                        "Advanced features",
+                        "Can be monitored remotely"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a proxy server?",
+                    options: [
+                        "Cache web content",
+                        "Filter traffic",
+                        "Hide client IP",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of a gateway?",
+                    options: [
+                        "Connects different network types",
+                        "Operates at Layer 2",
+                        "Only works with MAC addresses",
+                        "Cannot route traffic"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a function of a DNS server?",
+                    options: [
+                        "Assign IP addresses",
+                        "Resolve domain names",
+                        "Filter traffic",
+                        "Provide DHCP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of a VPN concentrator?",
+                    options: [
+                        "Provides remote access",
+                        "Filters content",
+                        "Connects networks",
+                        "Provides DHCP"
+                    ],
+                    correct: 0
+                }
+            ],
+            
+            "Network Cables & Wireless": [
+                {
+                    question: "Which category of Ethernet cable supports speeds up to 10Gbps at a distance of 100 meters?",
+                    options: [
+                        "Cat 5e",
+                        "Cat 6",
+                        "Cat 6a",
+                        "Cat 7"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which wireless standard operates in the 5GHz frequency range and provides the fastest speeds?",
+                    options: [
+                        "802.11a",
+                        "802.11b",
+                        "802.11g",
+                        "802.11ac"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of fiber optic cabling?",
+                    options: [
+                        "Susceptible to EMI",
+                        "Limited to 100 meters",
+                        "Uses light to transmit data",
+                        "Less expensive than copper"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following wireless security protocols is the MOST secure?",
+                    options: [
+                        "WEP",
+                        "WPA",
+                        "WPA2",
+                        "WPA3"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A technician needs to crimp a new Ethernet cable. Which of the following tools is required?",
+                    options: [
+                        "Punch down tool",
+                        "Crimper",
+                        "Tone generator",
+                        "Cable tester"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of coaxial cable?",
+                    options: [
+                        "Susceptible to EMI",
+                        "Used for high-speed networking",
+                        "Difficult to terminate",
+                        "Expensive"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of Cat 6 cable?",
+                    options: [
+                        "Supports 10Gbps",
+                        "Limited to 100m",
+                        "Shielded",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following wireless frequencies is used by 802.11n?",
+                    options: [
+                        "2.4GHz only",
+                        "5GHz only",
+                        "Both 2.4GHz and 5GHz",
+                        "900MHz"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a characteristic of UTP cable?",
+                    options: [
+                        "Shielded",
+                        "Unshielded",
+                        "Expensive",
+                        "Used for long distances"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a wireless access point?",
+                    options: [
+                        "Connect wireless devices to wired network",
+                        "Route between networks",
+                        "Filter content",
+                        "Provide DHCP"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of STP cable?",
+                    options: [
+                        "Unshielded",
+                        "Shielded",
+                        "Inexpensive",
+                        "Used for home networks"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following wireless standards provides the fastest speeds?",
+                    options: [
+                        "802.11a",
+                        "802.11b",
+                        "802.11g",
+                        "802.11ax"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of plenum cable?",
+                    options: [
+                        "Used in walls",
+                        "Fire-resistant",
+                        "Inexpensive",
+                        "Unshielded"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a wireless repeater?",
+                    options: [
+                        "Extend wireless range",
+                        "Filter content",
+                        "Connect networks",
+                        "Provide DHCP"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of crossover cable?",
+                    options: [
+                        "Connects different devices",
+                        "Connects same devices",
+                        "Used for long distances",
+                        "Shielded"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following wireless bands is less crowded?",
+                    options: [
+                        "2.4GHz",
+                        "5GHz",
+                        "900MHz",
+                        "All are equally crowded"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of patch cable?",
+                    options: [
+                        "Used for long distances",
+                        "Short cable for connecting devices",
+                        "Used in walls",
+                        "Expensive"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a wireless controller?",
+                    options: [
+                        "Manage multiple access points",
+                        "Filter content",
+                        "Connect networks",
+                        "Provide DHCP"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of straight-through cable?",
+                    options: [
+                        "Connects different devices",
+                        "Connects same devices",
+                        "Used for long distances",
+                        "Shielded"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a function of a wireless bridge?",
+                    options: [
+                        "Connect two networks wirelessly",
+                        "Extend wireless range",
+                        "Filter content",
+                        "Provide DHCP"
+                    ],
+                    correct: 0
+                }
+            ],
+            
+            "Internet Connections & Protocols": [
+                {
+                    question: "Which protocol is used to securely browse websites?",
+                    options: [
+                        "HTTP",
+                        "HTTPS",
+                        "FTP",
+                        "SMTP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A user reports that they can receive emails but cannot send them. Which protocol is MOST likely having issues?",
+                    options: [
+                        "POP3",
+                        "IMAP",
+                        "SMTP",
+                        "DNS"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is used to translate domain names to IP addresses?",
+                    options: [
+                        "DHCP",
+                        "DNS",
+                        "FTP",
+                        "HTTP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which protocol is used for secure remote administration of network devices?",
+                    options: [
+                        "Telnet",
+                        "SSH",
+                        "RDP",
+                        "VNC"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of UDP?",
+                    options: [
+                        "Connection-oriented",
+                        "Reliable delivery",
+                        "Low overhead",
+                        "Flow control"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which protocol is used for web browsing?",
+                    options: [
+                        "HTTP",
+                        "FTP",
+                        "SMTP",
+                        "POP3"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which protocol is used for email retrieval?",
+                    options: [
+                        "SMTP",
+                        "POP3",
+                        "HTTP",
+                        "FTP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of TCP?",
+                    options: [
+                        "Connectionless",
+                        "Unreliable",
+                        "Connection-oriented",
+                        "Low overhead"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which protocol is used for secure file transfers?",
+                    options: [
+                        "FTP",
+                        "SFTP",
+                        "HTTP",
+                        "SMTP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of DHCP?",
+                    options: [
+                        "Assign IP addresses",
+                        "Resolve names",
+                        "Route traffic",
+                        "Filter content"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which protocol is used for remote desktop connections?",
+                    options: [
+                        "SSH",
+                        "RDP",
+                        "Telnet",
+                        "VNC"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of FTP?",
+                    options: [
+                        "Secure",
+                        "Used for file transfers",
+                        "Used for web browsing",
+                        "Used for email"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which protocol is used for network time synchronization?",
+                    options: [
+                        "NTP",
+                        "SNTP",
+                        "HTTP",
+                        "DNS"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a function of SNMP?",
+                    options: [
+                        "Monitor network devices",
+                        "Assign IP addresses",
+                        "Resolve names",
+                        "Filter content"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which protocol is used for voice over IP?",
+                    options: [
+                        "HTTP",
+                        "FTP",
+                        "VoIP",
+                        "SIP"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of HTTPS?",
+                    options: [
+                        "Unencrypted",
+                        "Uses port 80",
+                        "Encrypted",
+                        "Used for email"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which protocol is used for dynamic DNS updates?",
+                    options: [
+                        "DDNS",
+                        "DNS",
+                        "DHCP",
+                        "HTTP"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a function of Telnet?",
+                    options: [
+                        "Secure remote administration",
+                        "Unsecure remote administration",
+                        "File transfer",
+                        "Web browsing"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which protocol is used for network management?",
+                    options: [
+                        "SNMP",
+                        "DNS",
+                        "DHCP",
+                        "HTTP"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of IMAP?",
+                    options: [
+                        "Email retrieval protocol",
+                        "Email sending protocol",
+                        "Web browsing protocol",
+                        "File transfer protocol"
+                    ],
+                    correct: 0
+                }
+            ],
+            
+            "IP Addressing & Configuration": [
+                {
+                    question: "Which of the following is a valid private IP address?",
+                    options: [
+                        "8.8.8.8",
+                        "172.16.0.1",
+                        "192.169.1.1",
+                        "169.254.0.1"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A computer has an IP address of 169.254.1.10. What does this indicate?",
+                    options: [
+                        "Static IP configuration",
+                        "DHCP failure",
+                        "VPN connection",
+                        "Proxy configuration"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is the default subnet mask for a Class C network?",
+                    options: [
+                        "255.0.0.0",
+                        "255.255.0.0",
+                        "255.255.255.0",
+                        "255.255.255.255"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which protocol is used to automatically assign IP addresses?",
+                    options: [
+                        "DNS",
+                        "DHCP",
+                        "ARP",
+                        "ICMP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a valid IPv6 address?",
+                    options: [
+                        "192.168.1.1",
+                        "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+                        "169.254.0.1",
+                        "255.255.255.0"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a private IP address range?",
+                    options: [
+                        "192.168.0.0 to 192.168.255.255",
+                        "8.8.8.0 to 8.8.8.255",
+                        "1.1.1.0 to 1.1.1.255",
+                        "255.255.255.0 to 255.255.255.255"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a valid subnet mask?",
+                    options: [
+                        "255.255.255.256",
+                        "255.255.255.0",
+                        "256.256.256.0",
+                        "255.255.0.256"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of ARP?",
+                    options: [
+                        "Resolve IP addresses to MAC addresses",
+                        "Assign IP addresses",
+                        "Resolve domain names",
+                        "Route traffic"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of IPv6?",
+                    options: [
+                        "32-bit addresses",
+                        "Limited addresses",
+                        "128-bit addresses",
+                        "Uses NAT"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a function of a default gateway?",
+                    options: [
+                        "Connect to local network",
+                        "Connect to other networks",
+                        "Resolve names",
+                        "Assign IP addresses"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a valid public IP address?",
+                    options: [
+                        "192.168.1.1",
+                        "10.0.0.1",
+                        "172.16.0.1",
+                        "8.8.8.8"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of CIDR?",
+                    options: [
+                        "Classful addressing",
+                        "Classless addressing",
+                        "Only works with IPv4",
+                        "Only works with IPv6"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of DNS?",
+                    options: [
+                        "Assign IP addresses",
+                        "Resolve domain names",
+                        "Route traffic",
+                        "Filter content"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of static IP addressing?",
+                    options: [
+                        "Automatically assigned",
+                        "Manually configured",
+                        "Changes frequently",
+                        "Uses DHCP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of NAT?",
+                    options: [
+                        "Translate private to public IPs",
+                        "Resolve names",
+                        "Assign IP addresses",
+                        "Route traffic"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of DHCP?",
+                    options: [
+                        "Manually configured",
+                        "Automatically assigns IPs",
+                        "Only works with IPv6",
+                        "Requires static configuration"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a subnet mask?",
+                    options: [
+                        "Identify network portion of IP",
+                        "Assign IP addresses",
+                        "Resolve names",
+                        "Route traffic"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of APIPA?",
+                    options: [
+                        "Manually configured",
+                        "Automatic private IP addressing",
+                        "Public addressing",
+                        "Requires DHCP server"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of ICMP?",
+                    options: [
+                        "Assign IP addresses",
+                        "Error reporting",
+                        "Resolve names",
+                        "Route traffic"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of IPv4?",
+                    options: [
+                        "128-bit addresses",
+                        "Unlimited addresses",
+                        "32-bit addresses",
+                        "No need for NAT"
+                    ],
+                    correct: 2
+                }
+            ],
+            
+            "Network Troubleshooting & Host Services": [
+                {
+                    question: "Which command would be used to test connectivity to a specific IP address?",
+                    options: [
+                        "ipconfig",
+                        "nslookup",
+                        "ping",
+                        "tracert"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user cannot access a website by name but can access it by IP address. Which service is MOST likely not functioning?",
+                    options: [
+                        "DHCP",
+                        "DNS",
+                        "HTTP",
+                        "HTTPS"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which command displays the current IP configuration on a Windows computer?",
+                    options: [
+                        "ipconfig",
+                        "ifconfig",
+                        "netstat",
+                        "nbtstat"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is used to troubleshoot DNS resolution issues?",
+                    options: [
+                        "ping",
+                        "tracert",
+                        "nslookup",
+                        "netstat"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which command shows active network connections on a Windows computer?",
+                    options: [
+                        "ipconfig",
+                        "netstat",
+                        "tracert",
+                        "nslookup"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which command shows the route packets take to a destination?",
+                    options: [
+                        "ping",
+                        "tracert",
+                        "ipconfig",
+                        "netstat"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is used to resolve IP addresses to MAC addresses?",
+                    options: [
+                        "DNS",
+                        "DHCP",
+                        "ARP",
+                        "ICMP"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which command is used to release and renew IP addresses?",
+                    options: [
+                        "ipconfig /release",
+                        "ipconfig /renew",
+                        "Both A and B",
+                        "netstat -r"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a symptom of a DNS server issue?",
+                    options: [
+                        "Cannot access websites by name",
+                        "Cannot access websites by IP",
+                        "Slow network performance",
+                        "No network connection"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which command is used to flush the DNS cache?",
+                    options: [
+                        "ipconfig /flushdns",
+                        "ipconfig /registerdns",
+                        "nslookup",
+                        "tracert"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a DHCP server issue?",
+                    options: [
+                        "APIPA address",
+                        "No network connection",
+                        "Cannot access internet",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which command is used to display network statistics?",
+                    options: [
+                        "netstat",
+                        "ipconfig",
+                        "ping",
+                        "tracert"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a default gateway issue?",
+                    options: [
+                        "Can access local network but not internet",
+                        "Cannot access local network",
+                        "Slow network performance",
+                        "DNS resolution issues"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which command is used to test network connectivity continuously?",
+                    options: [
+                        "ping -t",
+                        "ping -a",
+                        "ping -l",
+                        "ping -n"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a firewall issue?",
+                    options: [
+                        "Cannot access specific services",
+                        "No network connection",
+                        "Slow performance",
+                        "DHCP issues"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which command is used to display the routing table?",
+                    options: [
+                        "route print",
+                        "ipconfig /all",
+                        "netstat -r",
+                        "Both A and C"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a cable issue?",
+                    options: [
+                        "Intermittent connectivity",
+                        "Slow speeds",
+                        "No connection",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which command is used to test TCP connections?",
+                    options: [
+                        "telnet",
+                        "ping",
+                        "tracert",
+                        "nslookup"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a NIC driver issue?",
+                    options: [
+                        "No network connection",
+                        "Slow performance",
+                        "Intermittent connectivity",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which command is used to diagnose network issues?",
+                    options: [
+                        "netsh",
+                        "ipconfig",
+                        "ping",
+                        "All of the above"
+                    ],
+                    correct: 3
+                }
+            ],
+            
+            "Embedded & Internet Appliances": [
+                {
+                    question: "Which of the following is an example of an embedded system?",
+                    options: [
+                        "Desktop PC",
+                        "Smart thermostat",
+                        "Laptop computer",
+                        "Tablet"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "IoT devices often use which communication protocol for low-power, short-range communication?",
+                    options: [
+                        "Wi-Fi",
+                        "Bluetooth",
+                        "Zigbee",
+                        "NFC"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a characteristic of embedded systems?",
+                    options: [
+                        "General-purpose computing",
+                        "Dedicated to specific functions",
+                        "User-upgradeable hardware",
+                        "Full operating system"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which protocol is commonly used for home automation and IoT devices?",
+                    options: [
+                        "HTTP",
+                        "MQTT",
+                        "FTP",
+                        "SMTP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a security concern with IoT devices?",
+                    options: [
+                        "Lack of encryption",
+                        "Default passwords",
+                        "No firmware updates",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is an example of an IoT device?",
+                    options: [
+                        "Smart light bulb",
+                        "Desktop computer",
+                        "Laptop",
+                        "Server"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a characteristic of real-time operating systems (RTOS)?",
+                    options: [
+                        "Designed for general purpose",
+                        "Deterministic timing",
+                        "High resource usage",
+                        "Complex user interface"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which protocol is used for device-to-device communication in IoT?",
+                    options: [
+                        "HTTP",
+                        "CoAP",
+                        "FTP",
+                        "SMTP"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a common use case for embedded systems?",
+                    options: [
+                        "Gaming",
+                        "Industrial control",
+                        "Office productivity",
+                        "Web browsing"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of IoT devices?",
+                    options: [
+                        "High processing power",
+                        "Low power consumption",
+                        "Large storage",
+                        "Complex user interface"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a security measure for IoT devices?",
+                    options: [
+                        "Change default passwords",
+                        "Update firmware",
+                        "Network segmentation",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is an example of an embedded system in a vehicle?",
+                    options: [
+                        "Engine control unit",
+                        "GPS system",
+                        "Infotainment system",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which protocol is used for smart home devices?",
+                    options: [
+                        "Z-Wave",
+                        "Zigbee",
+                        "Both A and B",
+                        "HTTP"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a characteristic of microcontrollers?",
+                    options: [
+                        "High power consumption",
+                        "Integrated CPU, memory, I/O",
+                        "Require external components",
+                        "Expensive"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a use case for embedded systems?",
+                    options: [
+                        "Medical devices",
+                        "Industrial automation",
+                        "Consumer electronics",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a challenge with IoT security?",
+                    options: [
+                        "Limited processing power",
+                        "Lack of security features",
+                        "Difficulty in updating",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is an example of a wearable IoT device?",
+                    options: [
+                        "Smartwatch",
+                        "Fitness tracker",
+                        "Both A and B",
+                        "Desktop PC"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which protocol is used for IoT device management?",
+                    options: [
+                        "SNMP",
+                        "MQTT",
+                        "CoAP",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of edge computing?",
+                    options: [
+                        "Centralized processing",
+                        "Distributed processing",
+                        "High latency",
+                        "Requires constant internet"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of IoT in industry?",
+                    options: [
+                        "Predictive maintenance",
+                        "Process optimization",
+                        "Remote monitoring",
+                        "All of the above"
+                    ],
+                    correct: 3
+                }
+            ],
+            
+            "Virtualization": [
+                {
+                    question: "Which type of virtualization allows multiple operating systems to run simultaneously on a single physical machine?",
+                    options: [
+                        "Application virtualization",
+                        "Network virtualization",
+                        "Server virtualization",
+                        "Storage virtualization"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the term for a virtual machine that has been paused and saved to disk?",
+                    options: [
+                        "Snapshot",
+                        "Clone",
+                        "Template",
+                        "Checkpoint"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a benefit of virtualization?",
+                    options: [
+                        "Hardware consolidation",
+                        "Improved security",
+                        "Easier backups",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which component is required for hardware-assisted virtualization?",
+                    options: [
+                        "Multiple CPU cores",
+                        "VT-x/AMD-V support",
+                        "Large amounts of RAM",
+                        "Fast storage"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a type 1 hypervisor?",
+                    options: [
+                        "VMware Workstation",
+                        "VirtualBox",
+                        "Hyper-V",
+                        "QEMU"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a type 2 hypervisor?",
+                    options: [
+                        "VMware ESXi",
+                        "Microsoft Hyper-V",
+                        "VirtualBox",
+                        "KVM"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a benefit of using virtual machines?",
+                    options: [
+                        "Hardware independence",
+                        "Resource isolation",
+                        "Snapshot capabilities",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of a virtual switch?",
+                    options: [
+                        "Physical hardware",
+                        "Software-based networking",
+                        "Requires special cables",
+                        "Limited to one VM"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a hypervisor?",
+                    options: [
+                        "Manage virtual machines",
+                        "Allocate resources",
+                        "Provide isolation",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of virtualization for testing?",
+                    options: [
+                        "Quick environment setup",
+                        "Snapshot capabilities",
+                        "Isolated testing",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of container virtualization?",
+                    options: [
+                        "Full OS virtualization",
+                        "Shares host OS kernel",
+                        "Requires hypervisor",
+                        "High resource overhead"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a use case for virtualization?",
+                    options: [
+                        "Server consolidation",
+                        "Development environments",
+                        "Disaster recovery",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of virtual desktop infrastructure (VDI)?",
+                    options: [
+                        "Centralized management",
+                        "Remote access",
+                        "Hardware independence",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of paravirtualization?",
+                    options: [
+                        "No modification to guest OS",
+                        "Requires guest OS modification",
+                        "High performance overhead",
+                        "Only works with Windows"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of virtual machine migration?",
+                    options: [
+                        "Move VM between hosts",
+                        "Balance load",
+                        "Maintenance without downtime",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of virtual networking?",
+                    options: [
+                        "Flexible configuration",
+                        "No physical cabling",
+                        "Rapid deployment",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of a virtual appliance?",
+                    options: [
+                        "Pre-configured VM",
+                        "Requires manual setup",
+                        "General purpose",
+                        "High cost"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a function of resource pooling in virtualization?",
+                    options: [
+                        "Share resources among VMs",
+                        "Guarantee resources",
+                        "Improve utilization",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of virtualization for disaster recovery?",
+                    options: [
+                        "Quick recovery",
+                        "Lower cost",
+                        "Testing capabilities",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of software-defined networking (SDN)?",
+                    options: [
+                        "Physical network configuration",
+                        "Centralized control",
+                        "Hardware-based",
+                        "Limited scalability"
+                    ],
+                    correct: 1
+                }
+            ],
+            
+            "Cloud Concepts": [
+                {
+                    question: "Which cloud service model provides virtualized computing resources over the internet?",
+                    options: [
+                        "SaaS",
+                        "PaaS",
+                        "IaaS",
+                        "DaaS"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A company uses Microsoft Office 365 for email and productivity applications. Which cloud service model is this?",
+                    options: [
+                        "IaaS",
+                        "PaaS",
+                        "SaaS",
+                        "Hybrid cloud"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a characteristic of public cloud?",
+                    options: [
+                        "Owned and operated by a single organization",
+                        "Hosted on-premises",
+                        "Shared infrastructure",
+                        "Highest level of security"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which deployment model combines public and private clouds?",
+                    options: [
+                        "Public cloud",
+                        "Private cloud",
+                        "Hybrid cloud",
+                        "Community cloud"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a benefit of cloud computing?",
+                    options: [
+                        "Reduced capital expenditure",
+                        "Scalability",
+                        "Accessibility",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of private cloud?",
+                    options: [
+                        "Shared infrastructure",
+                        "Owned by organization",
+                        "Low cost",
+                        "Public access"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which cloud service model provides development platforms?",
+                    options: [
+                        "IaaS",
+                        "PaaS",
+                        "SaaS",
+                        "DaaS"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of cloud storage?",
+                    options: [
+                        "Local access only",
+                        "Automatic backups",
+                        "Limited capacity",
+                        "High cost"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a characteristic of community cloud?",
+                    options: [
+                        "Used by single organization",
+                        "Shared by specific community",
+                        "Public access",
+                        "Low security"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of SaaS?",
+                    options: [
+                        "No software installation",
+                        "Automatic updates",
+                        "Accessibility",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of IaaS?",
+                    options: [
+                        "Managed applications",
+                        "Managed platform",
+                        "Infrastructure as a service",
+                        "No control over infrastructure"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a benefit of PaaS?",
+                    options: [
+                        "Focus on development",
+                        "Managed infrastructure",
+                        "Scalability",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of cloud elasticity?",
+                    options: [
+                        "Fixed resources",
+                        "Automatic scaling",
+                        "Manual provisioning",
+                        "Limited capacity"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of cloud computing for businesses?",
+                    options: [
+                        "Cost savings",
+                        "Flexibility",
+                        "Disaster recovery",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of multi-cloud?",
+                    options: [
+                        "Single cloud provider",
+                        "Multiple cloud providers",
+                        "On-premises only",
+                        "No cloud usage"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of cloud backup?",
+                    options: [
+                        "Off-site storage",
+                        "Automatic backups",
+                        "Easy recovery",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of serverless computing?",
+                    options: [
+                        "Manage servers",
+                        "Pay per use",
+                        "Fixed capacity",
+                        "Complex deployment"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of cloud collaboration?",
+                    options: [
+                        "Remote access",
+                        "Real-time editing",
+                        "Version control",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of cloud security?",
+                    options: [
+                        "Provider responsibility",
+                        "Shared responsibility",
+                        "User responsibility only",
+                        "No security"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of cloud migration?",
+                    options: [
+                        "Modernization",
+                        "Cost optimization",
+                        "Scalability",
+                        "All of the above"
+                    ],
+                    correct: 3
+                }
+            ],
+            
+            "Supporting Mobile Devices": [
+                {
+                    question: "Which mobile device feature uses the device's accelerometer to rotate the screen orientation?",
+                    options: [
+                        "NFC",
+                        "GPS",
+                        "Geofencing",
+                        "Autorotation"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "A user wants to transfer photos from their smartphone to a computer without using cables. Which technology would be MOST appropriate?",
+                    options: [
+                        "NFC",
+                        "Bluetooth",
+                        "Infrared",
+                        "Wi-Fi Direct"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile operating systems?",
+                    options: [
+                        "Designed for touch input",
+                        "Limited multitasking",
+                        "No security features",
+                        "Only runs on specific hardware"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which mobile device feature allows users to make payments by tapping their device?",
+                    options: [
+                        "NFC",
+                        "Bluetooth",
+                        "Wi-Fi",
+                        "GPS"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a common mobile device security feature?",
+                    options: [
+                        "Biometric authentication",
+                        "Remote wipe",
+                        "Encryption",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile device security risk?",
+                    options: [
+                        "Malware",
+                        "Phishing",
+                        "Data leakage",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile device management (MDM)?",
+                    options: [
+                        "Device tracking",
+                        "Policy enforcement",
+                        "Remote wipe",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile device connectivity option?",
+                    options: [
+                        "Cellular",
+                        "Wi-Fi",
+                        "Bluetooth",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile apps?",
+                    options: [
+                        "Designed for small screens",
+                        "Touch-optimized",
+                        "Limited resources",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile device issue?",
+                    options: [
+                        "Battery drain",
+                        "Slow performance",
+                        "Connectivity problems",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of mobile device encryption?",
+                    options: [
+                        "Data protection",
+                        "Compliance",
+                        "Security",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile device backups?",
+                    options: [
+                        "Cloud-based",
+                        "Automatic",
+                        "Incremental",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile device troubleshooting step?",
+                    options: [
+                        "Restart device",
+                        "Check for updates",
+                        "Clear cache",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile device synchronization?",
+                    options: [
+                        "Data consistency",
+                        "Automatic updates",
+                        "Multi-device access",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of mobile device remote support?",
+                    options: [
+                        "Remote troubleshooting",
+                        "Reduced downtime",
+                        "Cost savings",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile device security measure?",
+                    options: [
+                        "Screen lock",
+                        "App permissions",
+                        "Device encryption",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile device productivity?",
+                    options: [
+                        "Portability",
+                        "Always connected",
+                        "Instant access",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile device accessory?",
+                    options: [
+                        "Protective case",
+                        "External battery",
+                        "Screen protector",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of mobile device integration?",
+                    options: [
+                        "Seamless workflow",
+                        "Data sharing",
+                        "Unified experience",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile device updates?",
+                    options: [
+                        "Security patches",
+                        "Feature improvements",
+                        "Bug fixes",
+                        "All of the above"
+                    ],
+                    correct: 3
+                }
+            ],
+            
+            "Mobile Apps & Data": [
+                {
+                    question: "Which mobile app distribution model allows users to install applications from sources other than the official app store?",
+                    options: [
+                        "Sideloading",
+                        "Jailbreaking",
+                        "Rooting",
+                        "Tethering"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a common method for backing up mobile device data?",
+                    options: [
+                        "Factory reset",
+                        "Cloud backup",
+                        "Overclocking",
+                        "Sideloading"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of mobile app sandboxing?",
+                    options: [
+                        "Improved performance",
+                        "Enhanced security",
+                        "Better battery life",
+                        "Faster updates"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which mobile app development framework allows building apps for multiple platforms using a single codebase?",
+                    options: [
+                        "Native development",
+                        "Cross-platform development",
+                        "Web development",
+                        "Hybrid development"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a common mobile app permission?",
+                    options: [
+                        "Camera access",
+                        "Location access",
+                        "Contacts access",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a method to protect mobile data?",
+                    options: [
+                        "Encryption",
+                        "Backup",
+                        "Password",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile app stores?",
+                    options: [
+                        "Curated content",
+                        "Security screening",
+                        "Easy updates",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile data synchronization method?",
+                    options: [
+                        "Cloud sync",
+                        "Local sync",
+                        "Push sync",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of mobile app updates?",
+                    options: [
+                        "Security patches",
+                        "New features",
+                        "Bug fixes",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile app security?",
+                    options: [
+                        "Code signing",
+                        "App permissions",
+                        "Sandboxing",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile data storage method?",
+                    options: [
+                        "Local storage",
+                        "Cloud storage",
+                        "Database storage",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of mobile app analytics?",
+                    options: [
+                        "User behavior insights",
+                        "Performance metrics",
+                        "Usage statistics",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile app monetization?",
+                    options: [
+                        "Paid apps",
+                        "In-app purchases",
+                        "Advertising",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile app testing method?",
+                    options: [
+                        "Unit testing",
+                        "Integration testing",
+                        "User testing",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of mobile app push notifications?",
+                    options: [
+                        "User engagement",
+                        "Real-time updates",
+                        "Marketing",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile app performance?",
+                    options: [
+                        "Fast loading",
+                        "Smooth operation",
+                        "Low resource usage",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile app security threat?",
+                    options: [
+                        "Malware",
+                        "Data leakage",
+                        "Unauthorized access",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of mobile app offline functionality?",
+                    options: [
+                        "Access without internet",
+                        "Improved performance",
+                        "Data savings",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of mobile app user interface?",
+                    options: [
+                        "Touch-friendly",
+                        "Intuitive",
+                        "Responsive",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common mobile app development challenge?",
+                    options: [
+                        "Fragmentation",
+                        "Performance",
+                        "Security",
+                        "All of the above"
+                    ],
+                    correct: 3
+                }
+            ],
+            
+            "Troubleshooting Mobile Devices": [
+                {
+                    question: "A smartphone's battery drains extremely quickly even when not in use. Which of the following is the MOST likely cause?",
+                    options: [
+                        "Disabled Wi-Fi",
+                        "Background apps",
+                        "Low storage",
+                        "High screen brightness"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which troubleshooting step should be performed FIRST when a mobile device becomes unresponsive?",
+                    options: [
+                        "Factory reset",
+                        "Force restart",
+                        "Update OS",
+                        "Remove battery"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A user reports that their mobile device won't connect to Wi-Fi. Which of the following should be checked FIRST?",
+                    options: [
+                        "Airplane mode",
+                        "Wi-Fi settings",
+                        "Router configuration",
+                        "Network adapter drivers"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which of the following is a symptom of a corrupted mobile OS?",
+                    options: [
+                        "Slow performance",
+                        "Frequent crashes",
+                        "App malfunctions",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which troubleshooting step should be performed LAST when troubleshooting mobile devices?",
+                    options: [
+                        "Restart device",
+                        "Check for updates",
+                        "Factory reset",
+                        "Clear cache"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a symptom of a damaged mobile screen?",
+                    options: [
+                        "Cracks",
+                        "Dead pixels",
+                        "Unresponsive touch",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a failing mobile battery?",
+                    options: [
+                        "Quick drain",
+                        "Won't charge",
+                        "Swelling",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be done before performing a factory reset on a mobile device?",
+                    options: [
+                        "Back up data",
+                        "Remove SIM card",
+                        "Charge battery",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a mobile device overheating?",
+                    options: [
+                        "Slow performance",
+                        "Battery drain",
+                        "Automatic shutdown",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common cause of mobile app crashes?",
+                    options: [
+                        "Insufficient memory",
+                        "Corrupted app data",
+                        "OS incompatibility",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a mobile device with insufficient storage?",
+                    options: [
+                        "Slow performance",
+                        "App installation failures",
+                        "Update issues",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be checked when a mobile device won't charge?",
+                    options: [
+                        "Charging cable",
+                        "Power adapter",
+                        "Charging port",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a mobile device with water damage?",
+                    options: [
+                        "Corrosion",
+                        "Short circuits",
+                        "Intermittent issues",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be done when a mobile device is running slowly?",
+                    options: [
+                        "Clear cache",
+                        "Close background apps",
+                        "Free up storage",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a mobile device with a faulty microphone?",
+                    options: [
+                        "No sound during calls",
+                        "Poor voice quality",
+                        "Voice assistant issues",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be checked when a mobile device can't make calls?",
+                    options: [
+                        "Signal strength",
+                        "Airplane mode",
+                        "SIM card",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a mobile device with a faulty speaker?",
+                    options: [
+                        "No sound",
+                        "Distorted audio",
+                        "Low volume",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be done when a mobile device is stuck in a boot loop?",
+                    options: [
+                        "Force restart",
+                        "Boot into recovery mode",
+                        "Factory reset",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a mobile device with GPS issues?",
+                    options: [
+                        "Inaccurate location",
+                        "Slow location acquisition",
+                        "No location services",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be done when troubleshooting mobile device connectivity issues?",
+                    options: [
+                        "Check network settings",
+                        "Restart device",
+                        "Update software",
+                        "All of the above"
+                    ],
+                    correct: 3
+                }
+            ],
+            
+            "Printers: Types & Setup": [
+                {
+                    question: "Which type of printer uses a laser beam to create an image on a drum?",
+                    options: [
+                        "Inkjet",
+                        "Thermal",
+                        "Laser",
+                        "Dot matrix"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "A user needs to print multipart forms for carbon copies. Which type of printer is BEST suited for this task?",
+                    options: [
+                        "Inkjet",
+                        "Laser",
+                        "Thermal",
+                        "Dot matrix"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of thermal printers?",
+                    options: [
+                        "Uses ink cartridges",
+                        "Requires special paper",
+                        "High resolution",
+                        "Quiet operation"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which printer type is BEST for printing high-quality photos?",
+                    options: [
+                        "Laser",
+                        "Inkjet",
+                        "Dot matrix",
+                        "Thermal"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a common printer interface?",
+                    options: [
+                        "USB",
+                        "Ethernet",
+                        "Wireless",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of 3D printers?",
+                    options: [
+                        "Use ink cartridges",
+                        "Create physical objects",
+                        "Only print in 2D",
+                        "Require special paper"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of a print server?",
+                    options: [
+                        "Manage print jobs",
+                        "Share printers",
+                        "Queue management",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of laser printers?",
+                    options: [
+                        "Use ink",
+                        "High speed",
+                        "Low quality",
+                        "Expensive consumables"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of network printers?",
+                    options: [
+                        "Shared access",
+                        "Centralized management",
+                        "Remote printing",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of inkjet printers?",
+                    options: [
+                        "High speed",
+                        "Low cost",
+                        "Photo quality",
+                        "All of the above"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a function of printer drivers?",
+                    options: [
+                        "Translate data",
+                        "Control printer",
+                        "Provide settings",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of dot matrix printers?",
+                    options: [
+                        "Quiet operation",
+                        "High quality",
+                        "Impact printing",
+                        "Color printing"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a benefit of wireless printers?",
+                    options: [
+                        "No cables",
+                        "Flexible placement",
+                        "Mobile printing",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of solid ink printers?",
+                    options: [
+                        "Use liquid ink",
+                        "Use solid ink sticks",
+                        "High speed",
+                        "Low cost"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a function of printer spooling?",
+                    options: [
+                        "Queue print jobs",
+                        "Manage memory",
+                        "Improve performance",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of line printers?",
+                    options: [
+                        "Page printers",
+                        "Character printers",
+                        "Dot matrix",
+                        "Laser"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a benefit of multifunction printers?",
+                    options: [
+                        "Space saving",
+                        "Cost effective",
+                        "Multiple functions",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of dye-sublimation printers?",
+                    options: [
+                        "Use ink",
+                        "Use heat",
+                        "High quality photos",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a function of printer configuration?",
+                    options: [
+                        "Set defaults",
+                        "Configure paper",
+                        "Manage settings",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a characteristic of plotters?",
+                    options: [
+                        "Small format",
+                        "Large format",
+                        "Low resolution",
+                        "Inexpensive"
+                    ],
+                    correct: 1
+                }
+            ],
+            
+            "Printer Maintenance & Troubleshooting": [
+                {
+                    question: "Which laser printer component is responsible for fusing the toner to the paper?",
+                    options: [
+                        "Drum",
+                        "Transfer roller",
+                        "Fuser assembly",
+                        "Toner cartridge"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "An inkjet printer is producing documents with streaks and missing colors. Which maintenance task should be performed FIRST?",
+                    options: [
+                        "Replace the print head",
+                        "Clean the print nozzles",
+                        "Replace the ink cartridges",
+                        "Calibrate the printer"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a symptom of a empty toner cartridge in a laser printer?",
+                    options: [
+                        "Paper jams",
+                        "Light print",
+                        "Smudged print",
+                        "No print"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "A laser printer is producing pages with repetitive defects at regular intervals. Which component is MOST likely causing the issue?",
+                    options: [
+                        "Fuser assembly",
+                        "Drum",
+                        "Transfer roller",
+                        "Toner cartridge"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following should be performed regularly to maintain a printer?",
+                    options: [
+                        "Clean the printer",
+                        "Update firmware",
+                        "Replace consumables",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a clogged print head in an inkjet printer?",
+                    options: [
+                        "Streaks",
+                        "Missing colors",
+                        "Poor quality",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common cause of paper jams in printers?",
+                    options: [
+                        "Worn rollers",
+                        "Wrong paper type",
+                        "Overfilled paper tray",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be done when a printer is displaying a 'low ink' message?",
+                    options: [
+                        "Replace ink cartridge",
+                        "Check ink levels",
+                        "Clean print head",
+                        "All of the above"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following is a symptom of a worn fuser assembly in a laser printer?",
+                    options: [
+                        "Smudged print",
+                        "Light print",
+                        "Wrinkled pages",
+                        "All of the above"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which of the following is a common printer maintenance task?",
+                    options: [
+                        "Clean rollers",
+                        "Replace toner",
+                        "Update firmware",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a bad transfer roller in a laser printer?",
+                    options: [
+                        "Light print",
+                        "Ghosting",
+                        "No print",
+                        "Smudged print"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "Which of the following should be done when a printer is not recognized by the computer?",
+                    options: [
+                        "Check connections",
+                        "Restart devices",
+                        "Update drivers",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a misaligned print head?",
+                    options: [
+                        "Streaks",
+                        "Gaps",
+                        "Poor quality",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common cause of poor print quality?",
+                    options: [
+                        "Low ink/toner",
+                        "Wrong paper type",
+                        "Dirty print head",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be done when a printer is printing slowly?",
+                    options: [
+                        "Check print settings",
+                        "Clear print queue",
+                        "Update drivers",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a worn drum in a laser printer?",
+                    options: [
+                        "Light print",
+                        "Dark spots",
+                        "Repetitive defects",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a common printer troubleshooting step?",
+                    options: [
+                        "Restart printer",
+                        "Check connections",
+                        "Clear paper jams",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a symptom of a faulty pickup roller?",
+                    options: [
+                        "Paper jams",
+                        "Multiple feeds",
+                        "No paper pickup",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following should be done when a printer is displaying error codes?",
+                    options: [
+                        "Check manual",
+                        "Search online",
+                        "Contact support",
+                        "All of the above"
+                    ],
+                    correct: 3
+                },
+                {
+                    question: "Which of the following is a benefit of regular printer maintenance?",
+                    options: [
+                        "Extended lifespan",
+                        "Better print quality",
+                        "Fewer issues",
+                        "All of the above"
+                    ],
+                    correct: 3
+                }
+            ]
+        };
+
+        // Application state
+        let currentQuestionIndex = 0;
+        let selectedQuestions = [];
+        let userAnswers = [];
+        let quizTimer = null;
+        let timeRemaining = 0;
+        let quizStartTime = 0;
+        let quizEndTime = 0;
+
+        // DOM elements
+        const setupScreen = document.querySelector('.setup-screen');
+        const quizScreen = document.querySelector('.quiz-screen');
+        const resultsScreen = document.querySelector('.results-screen');
+        const startQuizBtn = document.getElementById('startQuizBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const retakeBtn = document.getElementById('retakeBtn');
+        const newQuizBtn = document.getElementById('newQuizBtn');
+        const reviewBtn = document.getElementById('reviewBtn');
+        const topicWarning = document.getElementById('topicWarning');
+        const topicSummary = document.getElementById('topicSummary');
+        const selectedTopicsDisplay = document.getElementById('selectedTopicsDisplay');
+        const totalQuestionsDisplay = document.getElementById('totalQuestionsDisplay');
+
+        // Add event listeners for topic selection
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateTopicSummary);
+        });
+
+        // Initialize event listeners
+        startQuizBtn.addEventListener('click', startQuiz);
+        prevBtn.addEventListener('click', previousQuestion);
+        nextBtn.addEventListener('click', nextQuestion);
+        submitBtn.addEventListener('click', submitQuiz);
+        retakeBtn.addEventListener('click', retakeQuiz);
+        newQuizBtn.addEventListener('click', newQuiz);
+        reviewBtn.addEventListener('click', reviewAnswers);
+
+        // Update topic summary
+        function updateTopicSummary() {
+            const selectedTopics = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            if (selectedTopics.length >= 5) {
+                topicWarning.classList.remove('show');
+                topicSummary.style.display = 'block';
+                
+                // Update selected topics display
+                selectedTopicsDisplay.innerHTML = '';
+                selectedTopics.forEach(topic => {
+                    const topicElement = document.createElement('span');
+                    topicElement.className = 'selected-topic';
+                    topicElement.textContent = topic;
+                    selectedTopicsDisplay.appendChild(topicElement);
+                });
+                
+                // Update total questions
+                const totalQuestions = selectedTopics.length * 10;
+                totalQuestionsDisplay.textContent = totalQuestions;
+            } else {
+                topicSummary.style.display = 'none';
+            }
+        }
+
+        // Start the quiz
+        function startQuiz() {
+            // Get selected topics
+            const selectedTopics = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            if (selectedTopics.length < 5) {
+                topicWarning.classList.add('show');
+                return;
+            }
+            
+            topicWarning.classList.remove('show');
+            
+            // Get quiz settings
+            const timeLimit = parseInt(document.getElementById('timeLimit').value);
+            
+            // Select 10 questions from each topic
+            selectedQuestions = [];
+            selectedTopics.forEach(topic => {
+                const topicQuestions = shuffleArray([...questionDatabase[topic]]).slice(0, 10);
+                selectedQuestions.push(...topicQuestions);
+            });
+            
+            // Shuffle all questions
+            selectedQuestions = shuffleArray(selectedQuestions);
+            userAnswers = new Array(selectedQuestions.length).fill(-1);
+            
+            // Set up timer
+            timeRemaining = timeLimit;
+            quizStartTime = Date.now();
+            
+            // Switch to quiz screen
+            setupScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+            
+            // Initialize quiz
+            currentQuestionIndex = 0;
+            updateQuestionDisplay();
+            updateProgressBar();
+            
+            // Start timer if enabled
+            if (timeLimit > 0) {
+                startTimer();
+            }
+        }
+
+        // Timer functions
+        function startTimer() {
+            updateTimerDisplay();
+            quizTimer = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(quizTimer);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timeDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Question display functions
+        function updateQuestionDisplay() {
+            const question = selectedQuestions[currentQuestionIndex];
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = selectedQuestions.length;
+            document.getElementById('questionTopic').textContent = getTopicName(question);
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Generate options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = shuffleArray([...question.options]);
+            const correctIndex = shuffledOptions.indexOf(question.options[question.correct]);
+            
+            shuffledOptions.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                
+                if (userAnswers[currentQuestionIndex] === index) {
+                    optionElement.classList.add('selected');
+                }
+                
+                optionElement.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Update navigation buttons
+            prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'inline-flex';
+            nextBtn.style.display = currentQuestionIndex === selectedQuestions.length - 1 ? 'none' : 'inline-flex';
+            submitBtn.style.display = currentQuestionIndex === selectedQuestions.length - 1 ? 'inline-flex' : 'none';
+        }
+
+        function getTopicName(question) {
+            for (const topic in questionDatabase) {
+                if (questionDatabase[topic].includes(question)) {
+                    return topic;
+                }
+            }
+            return "Unknown Topic";
+        }
+
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            
+            // Update UI
+            document.querySelectorAll('.option').forEach((option, i) => {
+                if (i === index) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / selectedQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // Navigation functions
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateQuestionDisplay();
+                updateProgressBar();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
+                currentQuestionIndex++;
+                updateQuestionDisplay();
+                updateProgressBar();
+            }
+        }
+
+        // Quiz submission
+        function submitQuiz() {
+            clearInterval(quizTimer);
+            quizEndTime = Date.now();
+            
+            // Calculate results
+            let correctCount = 0;
+            selectedQuestions.forEach((question, index) => {
+                if (userAnswers[index] !== -1 && userAnswers[index] === question.correct) {
+                    correctCount++;
+                }
+            });
+            
+            const incorrectCount = selectedQuestions.length - correctCount;
+            const accuracy = Math.round((correctCount / selectedQuestions.length) * 100);
+            const timeTaken = Math.floor((quizEndTime - quizStartTime) / 1000);
+            
+            // Display results
+            document.getElementById('scoreDisplay').textContent = `${accuracy}%`;
+            document.getElementById('correctAnswers').textContent = correctCount;
+            document.getElementById('incorrectAnswers').textContent = incorrectCount;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            document.getElementById('timeTaken').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Switch to results screen
+            quizScreen.classList.remove('active');
+            resultsScreen.classList.add('active');
+        }
+
+        // Quiz restart functions
+        function retakeQuiz() {
+            // Reset quiz state
+            currentQuestionIndex = 0;
+            userAnswers = new Array(selectedQuestions.length).fill(-1);
+            timeRemaining = parseInt(document.getElementById('timeLimit').value);
+            quizStartTime = Date.now();
+            
+            // Shuffle questions again
+            selectedQuestions = shuffleArray(selectedQuestions);
+            
+            // Switch to quiz screen
+            resultsScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+            
+            // Restart quiz
+            updateQuestionDisplay();
+            updateProgressBar();
+            
+            // Restart timer if enabled
+            if (timeRemaining > 0) {
+                startTimer();
+            }
+        }
+
+        function newQuiz() {
+            // Reset everything
+            currentQuestionIndex = 0;
+            selectedQuestions = [];
+            userAnswers = [];
+            timeRemaining = 0;
+            
+            // Clear selections
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Hide topic summary
+            topicSummary.style.display = 'none';
+            
+            // Switch to setup screen
+            resultsScreen.classList.remove('active');
+            setupScreen.classList.add('active');
+        }
+
+        function reviewAnswers() {
+            // This would typically show a detailed review of all questions and answers
+            alert('Review feature would show detailed question breakdown here');
+        }
+
+        // Utility function to shuffle array
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    </script>
+</body>
+</html>
